@@ -1,18 +1,29 @@
 import { Sequelize } from 'sequelize';
-import config from '../config/config.js';
-import blogModel from './blogmodel.js';
+import config        from '../config/config.js';
+import blogModel     from './blogmodel.js';
 
-const env = process.env.NODE_ENV || 'development';
-const dbConfig = config[env];
+const env       = process.env.NODE_ENV || 'development';
+const dbConfig  = config[env];
+
+// ──────────────────────────────────────────────────────────────
+// Ensure the port is numeric (falls back to default 3306)
+// ──────────────────────────────────────────────────────────────
+const DB_PORT = Number(dbConfig.port) || 3306;
 
 const sequelize = new Sequelize(
-  dbConfig.database,
-  dbConfig.username,
-  dbConfig.password,
+  dbConfig.database,           // DB name
+  dbConfig.username,           // user
+  dbConfig.password,           // pwd
   {
-    host: dbConfig.host,
-    dialect: dbConfig.dialect,
+    host:   dbConfig.host,
+    port:   DB_PORT,           // ✅ explicit port
+    dialect: dbConfig.dialect, // 'mysql'
     logging: false,
+
+    // Uncomment if your provider requires SSL (e.g. Railway, PlanetScale)
+    // dialectOptions: {
+    //   ssl: { rejectUnauthorized: false },
+    // },
   }
 );
 
